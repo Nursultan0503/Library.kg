@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }} — Library.kg{% endblock %}
+
+{% block content %}
+    <div class="detail">
+        {% if book.image %}
+            <img src="{{ book.image.url }}" alt="{{ book.title }}">
+        {% else %}
+            <div class="no-cover">Нет обложки</div>
+        {% endif %}
+
+        <div class="detail-info">
+            <h1>{{ book.title }}</h1>
+            <div class="muted">{{ book.author }}</div>
+
+            <table>
+                <tr><td>Жанр</td><td><span class="badge">{{ book.get_genre_display }}</span></td></tr>
+                <tr><td>Страниц</td><td>{{ book.pages }}</td></tr>
+                {% if book.year %}<tr><td>Год издания</td><td>{{ book.year }}</td></tr>{% endif %}
+                <tr><td>Цена</td><td class="price">{{ book.price }} сом</td></tr>
+                <tr><td>Добавлено</td><td>{{ book.created_at|date:"d.m.Y H:i" }}</td></tr>
+            </table>
+
+            <h3>Описание</h3>
+            <p>{{ book.description|default:"Описание отсутствует."|linebreaksbr }}</p>
+
+            <a href="{% url 'book_list' %}" class="btn">← Назад к списку</a>
+        </div>
+    </div>
+{% endblock %}

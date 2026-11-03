@@ -1,4 +1,18 @@
 from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404
+from .models import Book
+
+# 1. Представление для вывода списка всех книг
+def book_list_view(request):
+    books = Book.objects.all().order_by('-created_at')
+    return render(request, 'book/book_list.html', {'books': books})
+
+# 2. Представление для детальной информации о конкретной книге
+def book_detail_view(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    return render(request, 'book/book_detail.html', {'book': book})
+
+
 
 def about_me(request):
     return HttpResponse(
