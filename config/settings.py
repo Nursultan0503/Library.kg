@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'book.apps.BookConfig',  # наше приложение
     'tour.apps.TourConfig',  # тур отдыха (ДЗ 3)
+    'orders.apps.OrdersConfig',  # CRUD заказов (ДЗ 4)
 ]
 
 MIDDLEWARE = [

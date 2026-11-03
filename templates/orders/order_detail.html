@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Заказ №{{ order.id }} — Library.kg{% endblock %}
+
+{% block content %}
+    <div class="empty">
+        <h1>Заказ №{{ order.id }}</h1>
+        <span class="status status-{{ order.status }}">{{ order.get_status_display }}</span>
+
+        {% if order.product_image %}
+            <p><img src="{{ order.product_image.url }}" alt="{{ order.product }}" style="max-width:260px;border-radius:8px"></p>
+        {% endif %}
+        <table class="info">
+            <tr><td>Покупатель</td><td>{{ order.customer_name }}</td></tr>
+            <tr><td>Телефон</td><td>{{ order.phone }}</td></tr>
+            <tr><td>Товар</td><td>{{ order.product }}</td></tr>
+            <tr><td>Количество</td><td>{{ order.quantity }}</td></tr>
+            <tr><td>Цена за шт.</td><td>{{ order.price }} сом</td></tr>
+            <tr><td>Итого</td><td class="price">{{ order.total }} сом</td></tr>
+            <tr><td>Адрес</td><td>{{ order.address }}</td></tr>
+            <tr><td>Оплата</td><td>{{ order.get_payment_method_display }}</td></tr>
+            <tr><td>Создан</td><td>{{ order.created_at|date:"d.m.Y H:i" }}</td></tr>
+            <tr><td>Изменён</td><td>{{ order.updated_at|date:"d.m.Y H:i" }}</td></tr>
+            {% if order.comment %}<tr><td>Комментарий</td><td>{{ order.comment|linebreaksbr }}</td></tr>{% endif %}
+        </table>
+
+        <a href="{% url 'order_update' order.id %}" class="btn">Редактировать</a>
+        <a href="{% url 'order_delete' order.id %}" class="btn btn-danger">Удалить</a>
+        <a href="{% url 'order_list' %}" class="btn btn-light">← К списку</a>
+    </div>
+{% endblock %}

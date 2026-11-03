@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Удалить заказ №{{ order.id }} — Library.kg{% endblock %}
+
+{% block content %}
+    <div class="empty" style="max-width:640px">
+        <h1>Удалить заказ №{{ order.id }}?</h1>
+        <p>{{ order.customer_name }} — {{ order.product }} ({{ order.quantity }} шт., {{ order.total }} сом)</p>
+        <p class="muted">Это действие нельзя отменить.</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Да, удалить</button>
+            <a href="{% url 'order_detail' order.id %}" class="btn btn-light">Отмена</a>
+        </form>
+    </div>
+{% endblock %}

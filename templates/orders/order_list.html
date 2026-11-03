@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Заказы — Library.kg{% endblock %}
+
+{% block content %}
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <h1 style="margin:0">Заказы маркетплейса</h1>
+        <a href="{% url 'order_create' %}" class="btn" style="margin:0">+ Новый заказ</a>
+    </div>
+
+    <form method="get" class="filters">
+        <input type="text" name="q" value="{{ query }}" placeholder="Поиск по покупателю или товару">
+        <select name="status">
+            <option value="">Все статусы</option>
+            {% for value, label in statuses %}
+                <option value="{{ value }}" {% if value == current_status %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn" style="margin:0">Найти</button>
+        {% if query or current_status %}<a href="{% url 'order_list' %}">Сбросить</a>{% endif %}
+    </form>
+
+    {% if orders %}
+        <div class="empty" style="overflow-x:auto;padding:0">
+            <table class="table">
+                <tr>
+                    <th>№</th><th>Покупатель</th><th>Товар</th><th>Кол-во</th>
+                    <th>Сумма</th><th>Статус</th><th>Дата</th><th></th>
+                </tr>
+                {% for order in orders %}
+                    <tr>
+                        <td><a href="{% url 'order_detail' order.id %}">{{ order.id }}</a></td>
+                        <td>{{ order.customer_name }}</td>
+                        <td>{{ order.product }}</td>
+                        <td>{{ order.quantity }}</td>
+                        <td class="price">{{ order.total }} сом</td>
+                        <td><span class="status status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+                        <td class="muted">{{ order.created_at|date:"d.m.Y" }}</td>
+                        <td style="white-space:nowrap">
+                            <a href="{% url 'order_update' order.id %}">✏️</a>
+                            <a href="{% url 'order_delete' order.id %}">🗑️</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        <div class="empty">Заказов не найдено.</div>
+    {% endif %}
+{% endblock %}
