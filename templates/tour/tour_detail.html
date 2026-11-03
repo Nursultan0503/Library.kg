@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ tour.title }} — Library.kg{% endblock %}
+
+{% block content %}
+    <div class="detail">
+        {% if tour.image %}
+            <img src="{{ tour.image.url }}" alt="{{ tour.title }}">
+        {% else %}
+            <div class="no-cover">Нет фото</div>
+        {% endif %}
+
+        <div class="detail-info">
+            <h1>{{ tour.title }}</h1>
+            <div>
+                {% for cat in tour.categories.all %}
+                    <a href="{% url 'tour_list' %}?category={{ cat.id }}" class="badge">{{ cat.name }}</a>
+                {% empty %}
+                    <span class="muted">Без категории</span>
+                {% endfor %}
+            </div>
+
+            <table>
+                <tr><td>Место</td><td>{{ tour.location }}</td></tr>
+                <tr><td>Длительность</td><td>{{ tour.duration_days }} дн.</td></tr>
+                <tr><td>Цена</td><td class="price">{{ tour.price }} сом</td></tr>
+            </table>
+
+            <h3>Описание</h3>
+            <p>{{ tour.description|default:"Описание отсутствует."|linebreaksbr }}</p>
+
+            <a href="{% url 'tour_list' %}" class="btn">← Назад к турам</a>
+        </div>
+    </div>
+
+    <h2 style="margin-top:32px">Комментарии ({{ comments|length }})</h2>
+    {% for comment in comments %}
+        <div class="empty" style="margin-bottom:12px">
+            <b>{{ comment.author }}</b>
+            <span class="price">{{ comment.get_rating_display }}</span>
+            <span class="muted">· {{ comment.created_at|date:"d.m.Y" }}</span>
+            <p style="margin:8px 0 0">{{ comment.text|linebreaksbr }}</p>
+        </div>
+    {% empty %}
+        <div class="empty">Комментариев пока нет.</div>
+    {% endfor %}
+{% endblock %}

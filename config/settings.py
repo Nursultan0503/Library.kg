@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'book.apps.BookConfig',  # наше приложение
+    'tour.apps.TourConfig',  # тур отдыха (ДЗ 3)
 ]
 
 MIDDLEWARE = [

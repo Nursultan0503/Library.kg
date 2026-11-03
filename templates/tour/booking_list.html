@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Брони — Library.kg{% endblock %}
+
+{% block content %}
+    <h1>Брони мест</h1>
+    <p class="muted">Один человек может забронировать только одно место (связь один к одному).</p>
+
+    {% if bookings %}
+        <div class="empty">
+            <table style="width:100%;border-collapse:collapse">
+                <tr style="text-align:left"><th>Человек</th><th>Место</th><th>Тип</th><th>Дата посещения</th></tr>
+                {% for b in bookings %}
+                    <tr style="border-top:1px solid #eee">
+                        <td style="padding:8px 0">{{ b.person.username }}</td>
+                        <td>{{ b.place.name }}</td>
+                        <td><span class="badge">{{ b.place.get_place_type_display }}</span></td>
+                        <td>{{ b.visit_date|date:"d.m.Y" }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        <div class="empty">Броней пока нет. Добавьте их через <a href="/admin/">админ-панель</a>.</div>
+    {% endif %}
+{% endblock %}

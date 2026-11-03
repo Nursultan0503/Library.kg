@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Туры — Library.kg{% endblock %}
+
+{% block content %}
+    <h1>Туры отдыха</h1>
+
+    <p>
+        <a href="{% url 'tour_list' %}" class="badge"{% if not current_category %} style="background:#3e2c23;color:#fff"{% endif %}>Все</a>
+        {% for cat in categories %}
+            <a href="?category={{ cat.id }}" class="badge"{% if current_category == cat.id|stringformat:"s" %} style="background:#3e2c23;color:#fff"{% endif %}>{{ cat.name }}</a>
+        {% endfor %}
+    </p>
+
+    {% if tours %}
+        <div class="grid">
+            {% for tour in tours %}
+                <a href="{% url 'tour_detail' tour.id %}" class="card">
+                    {% if tour.image %}
+                        <img src="{{ tour.image.url }}" alt="{{ tour.title }}">
+                    {% else %}
+                        <div class="no-cover">Нет фото</div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h3>{{ tour.title }}</h3>
+                        <div class="muted">{{ tour.location }} · {{ tour.duration_days }} дн.</div>
+                        {% for cat in tour.categories.all %}<span class="badge">{{ cat.name }}</span> {% endfor %}
+                        <div class="price">{{ tour.price }} сом</div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">Туров пока нет. Добавьте их через <a href="/admin/">админ-панель</a>.</div>
+    {% endif %}
+{% endblock %}
