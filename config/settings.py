@@ -16,6 +16,15 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Читаем секреты из файла .env (он в .gitignore и не попадает на GitHub)
+_env_file = BASE_DIR / '.env'
+if _env_file.exists():
+    for _line in _env_file.read_text(encoding='utf-8').splitlines():
+        _line = _line.strip()
+        if _line and not _line.startswith('#') and '=' in _line:
+            _key, _value = _line.split('=', 1)
+            os.environ.setdefault(_key.strip(), _value.strip())
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
@@ -41,6 +50,8 @@ INSTALLED_APPS = [
     'book.apps.BookConfig',  # наше приложение
     'tour.apps.TourConfig',  # тур отдыха (ДЗ 3)
     'orders.apps.OrdersConfig',  # CRUD заказов (ДЗ 4)
+    'users.apps.UsersConfig',  # регистрация и авторизация (ДЗ 5)
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -126,10 +137,34 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
+# Если в .env указаны EMAIL_HOST_USER и EMAIL_HOST_PASSWORD — письма уходят через Gmail.
+# Иначе письмо с кодом просто печатается в терминале, где запущен runserver.
+_email_user = os.environ.get('EMAIL_HOST_USER', '')
+_email_password = os.environ.get('EMAIL_HOST_PASSWORD', '')
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
+if _email_user and _email_password:
+    MAILERS = {
+        'default': {
+            'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+            'OPTIONS': {
+                'host': 'smtp.gmail.com',
+                'port': 587,
+                'username': _email_user,
+                'password': _email_password,
+                'use_tls': True,
+            },
+        },
+    }
+    DEFAULT_FROM_EMAIL = f'Library.kg <{_email_user}>'
+else:
+    MAILERS = {
+        'default': {
+            'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        },
+    }
+    DEFAULT_FROM_EMAIL = 'Library.kg <noreply@library.kg>'
+
+
+# Авторизация
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'profile'

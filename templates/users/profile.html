@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Личный кабинет — Library.kg{% endblock %}
+
+{% block content %}
+    <h1>Личный кабинет</h1>
+    <div class="detail">
+        {% if profile.photo %}
+            <img src="{{ profile.photo.url }}" alt="{{ profile.username }}" style="width:220px;height:220px;border-radius:50%;object-fit:cover">
+        {% else %}
+            <div class="no-cover" style="width:220px;height:220px;border-radius:50%">Нет фото</div>
+        {% endif %}
+
+        <div class="detail-info">
+            <h2 style="margin-top:0">Привет, {{ profile.first_name|default:user.username }}!</h2>
+            {% if profile %}
+                <table class="info">
+                    <tr><td>Логин</td><td>{{ profile.username }}</td></tr>
+                    <tr><td>Имя и фамилия</td><td>{{ profile.first_name }} {{ profile.last_name }}</td></tr>
+                    <tr><td>Email</td><td>{{ profile.email }} {% if profile.is_verified %}<span class="status status-delivered">подтверждён</span>{% endif %}</td></tr>
+                    <tr><td>Телефон</td><td>{{ profile.phone_number }}</td></tr>
+                    <tr><td>Дата рождения</td><td>{{ profile.date_bir|date:"d.m.Y" }}</td></tr>
+                    <tr><td>Пол</td><td>{{ profile.get_gender_display }}</td></tr>
+                    <tr><td>Город</td><td>{{ profile.city }}</td></tr>
+                    <tr><td>Зарегистрирован</td><td>{{ profile.date_joined|date:"d.m.Y H:i" }}</td></tr>
+                    <tr><td>Последний вход</td><td>{{ profile.last_login|date:"d.m.Y H:i" }}</td></tr>
+                </table>
+            {% else %}
+                <p class="muted">Это служебный аккаунт (например, суперпользователь) без анкеты.</p>
+            {% endif %}
+
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Выйти</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
